@@ -12,7 +12,6 @@ from tradingo.cli import (
     Task,
 )
 
-from tradingo.symbols import ARCTIC_URL
 from airflow.models import Variable
 
 logger = logging.getLogger(__name__)
@@ -76,7 +75,7 @@ os.environ["IG_SERVICE_API_KEY"] = Variable.get("IG_SERVICE_API_KEY")
 igtrading = make_airflow_dag(
     name="igtrading",
     config=HOME_DIR / "ig-trading.json",
-    dag_start_date=pd.Timestamp("2024-10-16 00:00:00+00:00"),
+    dag_start_date=pd.Timestamp("2024-10-16 15:00:00+00:00"),
     start_date=pd.Timestamp("2017-01-01 00:00:00+00"),
     schedule="*/15 5-21 * * MON-FRI",
     max_active_runs=1,

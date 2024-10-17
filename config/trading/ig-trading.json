@@ -29,9 +29,9 @@
         "frequency": "15m",
         "long_vol": 64,
         "short_vol": 6,
-        "threshold": 0.3,
-        "cap": 0.75,
-        "close_offset_periods": 5,
+        "threshold": 1,
+        "cap": 2,
+        "close_offset_periods": 0,
         "monotonic": true
       }
     }
@@ -52,7 +52,7 @@
         },
         "buffer_width": 0,
         "signal_weights": {
-          "intraday_momentum": 1
+          "intraday_momentum": -1
         },
         "vol_scale": false,
         "close": "prices/mid.close",

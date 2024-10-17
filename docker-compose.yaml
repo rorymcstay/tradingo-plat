@@ -70,7 +70,9 @@ x-airflow-common: &airflow-common
     # The following line can be used to set a custom config file, stored in the local config folder
     # If you want to use it, outcomment it and replace airflow.cfg with the name of your config file
     # AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
-    TRADINGO_ARCTIC_URL: "s3://s3.us-east-1.amazonaws.com:tradingo-store?aws_auth=true&path_prefix=prod"
+    TRADINGO_ARCTIC_URL: "lmdb:///opt/data/tradingo.db"
+
+    # TRADINGO_ARCTIC_URL: "s3://s3.us-east-1.amazonaws.com:tradingo-store?aws_auth=true&path_prefix=prod"
     AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
     AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
   volumes:
@@ -78,6 +80,7 @@ x-airflow-common: &airflow-common
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+    - ${AIRFLOW_PROJ_DIR:-.}/data/prod:/opt/data/
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on: &airflow-common-depends-on
     redis:
@@ -287,6 +290,45 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+
+  dtale:
+    <<: *airflow-common
+    entrypoint: [dtale]
+    command:
+      [
+        --arcticdb-uri,
+        lmdb:///opt/data/tradingo.db,
+        --arcticdb-use_store,
+        --no-reaper,
+        --hide-shutdown,
+      ]
+    ports:
+      - "40000:40000"
+    restart: always
+
+  jupyter:
+    <<: *airflow-common
+    user: "airflow"
+    entrypoint: [jupyter]
+    command:
+      [
+        notebook,
+        --ip,
+        0.0.0.0,
+        --no-browser,
+        --allow-root,
+        --NotebookApp.token='',
+        --NotebookApp.password='',
+      ]
+    ports:
+      - "8888:8888"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8888/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
 
 volumes:
   postgres-db-volume:

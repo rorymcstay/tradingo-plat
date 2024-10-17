@@ -9,7 +9,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 USER airflow
 
-ARG TRADINGO_VERSION=0.0.1
+ARG TRADINGO_VERSION=0.0.5
 
-RUN pip install apache-airflow==${AIRFLOW_VERSION} tradingo==${TRADINGO_VERSION}
+RUN pip install apache-airflow==${AIRFLOW_VERSION} tradingo[research]==${TRADINGO_VERSION}
 
