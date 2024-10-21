@@ -18,6 +18,28 @@
       },
       "periods": 96,
       "interval": "15MIN"
+    },
+    "im-assets": {
+      "provider": "ig-trading",
+      "index_col": null,
+      "epics": [
+        "CC.D.NG.UMP.IP",
+        "CC.D.LCO.UMP.IP",
+        "CC.D.LCO.UMP.IP",
+        "IR.D.10YEAR100.FWM2.IP",
+        "IX.D.SPTRD.IFS.IP"
+      ],
+      "function": "tradingo.sampling.sample_ig_instruments",
+      "volatility": {
+        "ivol": false,
+        "field": "prices/bid.close",
+        "speeds": [
+          128,
+          64
+        ]
+      },
+      "periods": 96,
+      "interval": "15MIN"
     }
   },
   "signal_configs": {
