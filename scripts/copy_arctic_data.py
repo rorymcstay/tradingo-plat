@@ -7,10 +7,10 @@ library = "prices"
 symbol_regex = "^ig-trading"
 
 # source_uri = "lmdb:///home/rory/dev/airflow/test/arctic.db"
-source_uri = (
+target_uri = (
     "s3://s3.us-east-1.amazonaws.com:tradingo-store?aws_auth=true&path_prefix=prod"
 )
-target_uri = "lmdb:///home/rory/dev/tradingo-plat/data/prod/tradingo.db"
+source_uri = "lmdb:///home/rory/dev/tradingo-plat/data/prod/tradingo.db"
 
 
 def sync_symbols(
@@ -36,7 +36,14 @@ dag = DAG("sync_arctic_to_s3")
 
 with dag:
 
-    for library in ("prices", "portfolio", "backtest", "trades", "signals"):
+    for library in (
+        "prices",
+        "portfolio",
+        "backtest",
+        "trades",
+        "signals",
+        "instruments",
+    ):
 
         PythonOperator(
             task_id=library,
